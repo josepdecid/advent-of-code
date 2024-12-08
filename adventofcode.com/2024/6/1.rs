@@ -82,8 +82,6 @@ fn navigate_maze_and_count_unique_positions_visited(maze: &mut Maze) -> u32 {
     return count;
 }
 
-
-
 fn main() {
     let mut maze = read_data();
     let result = navigate_maze_and_count_unique_positions_visited(&mut maze);
