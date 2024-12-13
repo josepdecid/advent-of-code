@@ -1,41 +1,38 @@
-fn read_data() -> Vec<u64>  {
+const ITERATIONS: u8 = 75;
+
+fn read_data() -> Vec<u64> {
     let bytes = include_bytes!("input.txt");
     let data = String::from_utf8_lossy(bytes);
 
     return data
         .split_whitespace()
-        .map(|v| v.parse().unwrap()).collect();
+        .map(|v| v.parse().unwrap())
+        .collect();
 }
 
-fn blink(data: &mut Vec<u64>) {
-    let mut i = 0;
-    while i < data.len() {
-        if data[i] == 0 {
-            data[i] = 1;
-            i += 1;
-            continue;
-        }
-
-        let number_of_digits = data[i].to_string().len() as u32;
-        if number_of_digits % 2 == 0 {
-            let divident = 10_u64.pow(number_of_digits / 2);
-            data.insert(i + 1, data[i] % divident);
-            data[i] = data[i] / divident;
-            i += 2;
-            continue;
-        }
-    
-        data[i] = data[i] * 2024;
-        i += 1;
+fn rune_blink(value: u64, iteration: u8) -> u64 {
+    if iteration == ITERATIONS {
+        return 1;
     }
+
+    let next_iteration = iteration + 1;
+
+    if value == 0 {
+        return rune_blink(1, next_iteration);
+    }
+
+    let number_of_digits = value.to_string().len() as u32;
+    if number_of_digits % 2 == 0 {
+        let divident = 10_u64.pow(number_of_digits / 2);
+        return rune_blink(value / divident, next_iteration)
+            + rune_blink(value % divident, next_iteration);
+    }
+
+    return rune_blink(value * 2024, next_iteration);
 }
 
 fn main() {
-    let mut data = read_data();
-    for i in 0..75 {
-        println!("Blink #{}", i);
-        blink(&mut data);
-    }
-
-    println!("Result: {}", data.len());
+    let data = read_data();
+    let result = data.iter().map(|v| rune_blink(*v, 0)).sum::<u64>();
+    println!("Result: {}", result);
 }
