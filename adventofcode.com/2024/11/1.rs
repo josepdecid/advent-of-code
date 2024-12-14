@@ -1,6 +1,4 @@
-use std::collections::LinkedList;
-
-fn read_data() -> LinkedList<u64>  {
+fn read_data() -> Vec<u64>  {
     let bytes = include_bytes!("input.txt");
     let data = String::from_utf8_lossy(bytes);
 
@@ -9,26 +7,21 @@ fn read_data() -> LinkedList<u64>  {
         .map(|v| v.parse().unwrap()).collect();
 }
 
-fn blink(data: &mut LinkedList<u64>) {
-    let mut cursor = data.cursor_mut();
-
-    while let Some(current) = cursor.current() {
-        if *current == 0 {
-            *current = 1;
-            cursor.move_next();
+fn blink(data: &mut Vec<u64>) {
+    let mut i = 0;
+    while i < data.len() {
+        if data[i] == 0 {
+            data[i] = 1;
+            i += 1;
             continue;
         }
 
-        let number_of_digits = *current.to_string().len() as u32;
+        let number_of_digits = data[i].to_string().len() as u32;
         if number_of_digits % 2 == 0 {
             let divident = 10_u64.pow(number_of_digits / 2);
-            let value = *current;
-            *current = data / divident;
-            cursor.move_next();
-            cursor.insert()
             data.insert(i + 1, data[i] % divident);
             data[i] = data[i] / divident;
-            cursor.move_next();
+            i += 2;
             continue;
         }
     
@@ -39,8 +32,7 @@ fn blink(data: &mut LinkedList<u64>) {
 
 fn main() {
     let mut data = read_data();
-    for i in 0..25 {
-        println!("Blink #{}", i);
+    for _ in 0..25 {
         blink(&mut data);
     }
 
