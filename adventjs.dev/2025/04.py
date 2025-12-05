@@ -19,4 +19,4 @@ def decode_santa_pin(code: str) -> str | None:
 
         values.append(current_number)
 
-    return "".join([((v % 10) + 10) % 10 for v in values])
+    return "".join([v % 10 for v in values])
